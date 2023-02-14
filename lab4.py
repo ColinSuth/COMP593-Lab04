@@ -7,6 +7,7 @@ def main():
 
     for port_num, count in port_traffic.items():
         if count >= 100:
+            generate_invalid_user_report(log_file)
             generate_port_traffic_report(log_file, port_num)
 
     pass
@@ -22,7 +23,7 @@ def tally_port_traffic(log_file):
 
 # TODO: Step 9
 def generate_port_traffic_report(log_file, port_number):
-    regex = r'(.{6}) (.{8}) .*SRC=(.+) DST(.+?) .+SPT=(.+)' + f'DPT=({port_number}) '
+    regex = r'(.{6}) (.{8}) .*SRC=(.+) DST=(.+?) .+SPT=(.+)' + f'DPT=({port_number}) '
     data = filter_log_by_regex(log_file, regex)[1]
 
     report_df = pd.DataFrame(data)
@@ -32,10 +33,17 @@ def generate_port_traffic_report(log_file, port_number):
 
 # TODO: Step 11
 def generate_invalid_user_report(log_file):
+    regex = r'(.{6}) (.{8}) .*Invalid user (.*) from (.*)'
+    data = filter_log_by_regex(log_file, regex)[1]
+
+    report_df = pd.DataFrame(data)
+    header_row = ('Date', 'Time', 'Username', 'IP Address')
+    report_df.to_csv('invalid_users.csv', index=False, header=header_row)
     return
 
 # TODO: Step 12
 def generate_source_ip_log(log_file, ip_address):
+
     return
 
 if __name__ == '__main__':
